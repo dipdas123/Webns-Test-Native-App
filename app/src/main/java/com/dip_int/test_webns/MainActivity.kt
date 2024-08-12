@@ -1,10 +1,8 @@
 package com.dip_int.test_webns
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -20,16 +18,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.dip_int.test_webns.common.backgroundLocationRunning
 import com.dip_int.test_webns.location.LocationService
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import java.util.Locale
-import java.util.TimerTask
+import com.dip_int.test_webns.screens.multi_selection.MultiDateSelectionActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,32 +30,38 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_PERMISSION_CODE = 1003
     }
 
-    val gson : Gson = Gson()
-    private val scope = CoroutineScope(Dispatchers.Main)
-    private lateinit var locationInfoTextView: TextView
-    private lateinit var tv_location_info_current: TextView
-    private val locationClient by lazy {
-        LocationServices.getFusedLocationProviderClient(this)
-    }
-    private lateinit var locationCallback: LocationCallback
+    override fun onResume() {
+        super.onResume()
+        println("onResume")
 
+        if (isLocationEnabled()) {
+            checkAndRequestPermissions()
+            println("Location services are enabled")
+        } else {
+            checkAndPromptEnableLocation()
+            println("Location services are still disabled")
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
-        locationInfoTextView = findViewById(R.id.tv_location_info_last_known)
-        tv_location_info_current = findViewById(R.id.tv_location_info_current)
-        val btnGetLastLocation: Button = findViewById(R.id.btn_get_last_location)
-        val btnGetCurrentLocation: Button = findViewById(R.id.btn_get_current_location)
-        val sendLastKnownLocationBtn: Button = findViewById(R.id.sendLastKnownLocationBtn)
-        val sendCurrentLocationBtn: Button = findViewById(R.id.sendCurrentLocationBtn)
         val start: Button = findViewById(R.id.start)
         val stop: Button = findViewById(R.id.stop)
+        val openCameraBtn: Button = findViewById(R.id.openCameraBtn)
+        val openCalenderBtn: Button = findViewById(R.id.openCalenderBtn)
+        val locationServiceText: TextView = findViewById(R.id.locationServiceText)
 
+        backgroundLocationRunning = false
+        if (backgroundLocationRunning) {
+            locationServiceText.text = "Running...\nCheck the notification panel for updates."
+        } else {
+            locationServiceText.text = "Start Service"
+        }
 
+        /// Permission Check
         if (isNetworkAvailable(this)) {
             if (isLocationEnabled()) {
                 checkAndRequestPermissions()
@@ -75,118 +72,75 @@ class MainActivity : AppCompatActivity() {
             enableInternetConnectionDialog()
         }
 
+        /// Start Background Location Service
+        if (isNetworkAvailable(this)) {
+            if (isLocationEnabled()) {
+//                backgroundLocationRunning = true
+//                startOrStopBackgroundLocationServiceStatus(true, locationServiceText)
+//                Toast.makeText(this, "Background Location Service Running...", Toast.LENGTH_SHORT).show()
+//                val intent = Intent(applicationContext, LocationService::class.java)
+//                intent.action = LocationService.ACTION_START
+//                startService(intent)
+            } else {
+                checkAndPromptEnableLocation()
+            }
+        } else {
+            enableInternetConnectionDialog()
+        }
+
+        clicks(start, stop, locationServiceText, openCameraBtn, openCalenderBtn)
+    }
+
+    private fun clicks(start: Button, stop: Button, locationServiceText: TextView, openCameraBtn: Button, openCalenderBtn: Button) {
         start.setOnClickListener {
-            Toast.makeText(this, "Please wait, the service will start shortly...", Toast.LENGTH_LONG).show()
-            val intent = Intent(applicationContext, LocationService::class.java)
-            intent.action = LocationService.ACTION_START
-            startService(intent)
+            if (isNetworkAvailable(this)) {
+                if (isLocationEnabled()) {
+                    startOrStopBackgroundLocationServiceStatus(true, locationServiceText)
+                    Toast.makeText(this, "Background Location Service Running...", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(applicationContext, LocationService::class.java)
+                    intent.action = LocationService.ACTION_START
+                    startService(intent)
+                } else {
+                    checkAndPromptEnableLocation()
+                }
+            } else {
+                enableInternetConnectionDialog()
+            }
         }
 
         stop.setOnClickListener {
+            startOrStopBackgroundLocationServiceStatus(false, locationServiceText)
             val intent = Intent(applicationContext, LocationService::class.java)
             intent.action = LocationService.ACTION_STOP
             startService(intent)
-            Toast.makeText(this, "Stopping the service", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Background LocationService Stopped", Toast.LENGTH_SHORT).show()
         }
 
-/*        getLastKnownLocation()
-        getCurrentLocation()
-
-        btnGetLastLocation.setOnClickListener {
-            if (isNetworkAvailable(this)) {
-                if (isLocationEnabled()) {
-                    getLastKnownLocation()
-                } else {
-                    checkAndPromptEnableLocation()
-                }
-            } else {
-                enableInternetConnectionDialog()
-            }
+        openCameraBtn.setOnClickListener {
+//            val intent = Intent(this@MainActivity, MultiDateSelectionActivity::class.java)
+//            startActivity(intent)
         }
 
-        btnGetCurrentLocation.setOnClickListener {
-            if (isNetworkAvailable(this)) {
-                if (isLocationEnabled()) {
-                    getCurrentLocation()
-                } else {
-                    checkAndPromptEnableLocation()
-                }
-            }else {
-                enableInternetConnectionDialog()
-            }
-        }*/
+        openCalenderBtn.setOnClickListener {
+            val intent = Intent(this@MainActivity, MultiDateSelectionActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
+    private fun startOrStopBackgroundLocationServiceStatus(backgroundLocationRunning: Boolean, locationServiceText: TextView) {
+        if (backgroundLocationRunning) {
+            locationServiceText.text = "Running...\nCheck the notification panel for updates."
+        } else {
+            locationServiceText.text = "Start Service"
+        }
     }
 
 
-/*    @SuppressLint("MissingPermission")
-    private fun getLastKnownLocation() {
-        locationClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    val locationName = getLocationName(location.latitude, location.longitude)
-                    val locationInfo = "Last Known location is \nlat: ${location.latitude}\nlong: ${location.longitude}\n$locationName\nfetched at ${System.currentTimeMillis()}"
-                    println("Last Known location >>>>>>>>>>>>>> lat: ${location.latitude}\n" + "long: ${location.longitude}")
-
-                    locationInfoTextView.text = locationInfo
-                } else {
-                    locationInfoTextView.text = "No last known location. Try fetching the current location first."
-                }
-            }
-            .addOnFailureListener {
-                locationInfoTextView.text = "Failed to get location: ${it.message}"
-            }
-    }
-
-
-    @SuppressLint("MissingPermission")
-    private fun getCurrentLocation() {
-        val priority = Priority.PRIORITY_HIGH_ACCURACY // or use PRIORITY_BALANCED_POWER_ACCURACY based on need
-        val cancellationTokenSource = CancellationTokenSource()
-
-        locationClient.getCurrentLocation(priority, cancellationTokenSource.token)
-            .addOnSuccessListener { location ->
-                if (location != null) {
-                    val locationName = getLocationName(location.latitude, location.longitude)
-                    val locationInfo = "Current location is \nlat: ${location.latitude}\nlong: ${location.longitude}\n$locationName\nfetched at ${System.currentTimeMillis()}"
-                    println("Current location >>>>>>>>>>>>>> lat: ${location.latitude}\n" + "long: ${location.longitude}")
-
-                    tv_location_info_current.text = locationInfo
-                } else {
-                    tv_location_info_current.text = "Failed to get current location."
-                }
-            }
-            .addOnFailureListener { exception ->
-                tv_location_info_current.text = "Failed to get location: ${exception.message}"
-            }
-    }
-
-    private fun getLocationName(latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(this, Locale.getDefault())
-        return try {
-            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-                // You can customize this based on what you want to display
-                "${address.locality}, ${address.countryName}"
-            } else {
-                "Unknown Location"
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            "Unknown Location"
-        }
-    }*/
 
 
 
 
-
-
-
-
-
-
-    /// Internet
+    /// Check Internet
     private fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -207,7 +161,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    /// My Location
+    /// Enabling My Location
     private fun checkAndPromptEnableLocation() {
         if (!isLocationEnabled()) {
             enableMyLocationDialog()
@@ -388,7 +342,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
     // Permission Dialogs
     private fun openApplicationMainSettingsDialog() {
         AlertDialog.Builder(this)
@@ -419,22 +372,5 @@ class MainActivity : AppCompatActivity() {
             }.show()
     }
     // Permission Dialogs
-
-
-    override fun onResume() {
-        super.onResume()
-        println("onResume")
-
-        if (isLocationEnabled()) {
-            checkAndRequestPermissions()
-
-//            getLastKnownLocation()
-//            getCurrentLocation()
-            println("Location services are enabled")
-        } else {
-            checkAndPromptEnableLocation()
-            println("Location services are still disabled")
-        }
-    }
 
 }

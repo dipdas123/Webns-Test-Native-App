@@ -10,6 +10,8 @@ import android.net.NetworkCapabilities
 import android.os.BatteryManager
 import android.os.Build
 import android.telephony.TelephonyManager
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.UUID
 
 fun getDeviceIMEI(): String {
@@ -110,3 +112,5 @@ fun getBatteryLevel(context: Context): Int {
         -1 // Indicates an error in retrieving the battery level
     }
 }
+
+val dateFormatter = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault())

@@ -13,6 +13,7 @@ import android.location.Geocoder
 import androidx.core.app.NotificationCompat
 import com.dip_int.test_webns.R
 import com.dip_int.test_webns.api.callSendUserLocation
+import com.dip_int.test_webns.common.backgroundLocationRunning
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -74,6 +75,7 @@ class LocationService : Service() {
                 val locationName = getLocationName(lat, long)
                 val updatedNotification = notification.setContentText("Location: (${"Lat : $lat"}, ${"Long : $long, Address: $locationName"})")
                 notificationManager.notify(1, updatedNotification.build())
+                backgroundLocationRunning = true
 
                 callSendUserLocation(locationName, lat, long, applicationContext)
             }.launchIn(serviceScope)
@@ -81,6 +83,7 @@ class LocationService : Service() {
     }
 
     private fun stop() {
+        backgroundLocationRunning = false
         stopForeground(true)
         stopSelf()
     }
