@@ -75,12 +75,12 @@ class MainActivity : AppCompatActivity() {
         /// Start Background Location Service
         if (isNetworkAvailable(this)) {
             if (isLocationEnabled()) {
-//                backgroundLocationRunning = true
-//                startOrStopBackgroundLocationServiceStatus(true, locationServiceText)
-//                Toast.makeText(this, "Background Location Service Running...", Toast.LENGTH_SHORT).show()
-//                val intent = Intent(applicationContext, LocationService::class.java)
-//                intent.action = LocationService.ACTION_START
-//                startService(intent)
+                backgroundLocationRunning = true
+                startOrStopBackgroundLocationServiceStatus(true, locationServiceText)
+                Toast.makeText(this, "Background Location Service Running...", Toast.LENGTH_SHORT).show()
+                val intent = Intent(applicationContext, LocationService::class.java)
+                intent.action = LocationService.ACTION_START
+                startService(intent)
             } else {
                 checkAndPromptEnableLocation()
             }

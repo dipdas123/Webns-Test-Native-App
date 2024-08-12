@@ -36,7 +36,7 @@ class MultiDateSelectionActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_multi_date_selection)
         val calendarView: MaterialCalendarView = findViewById(R.id.calendarView)
-        selectedDatesTV = findViewById(R.id.selectedDatesTV)
+//        selectedDatesTV = findViewById(R.id.selectedDatesTV)
         viewDatesListBtn = findViewById(R.id.viewDatesListBtn)
 
 
@@ -62,7 +62,6 @@ class MultiDateSelectionActivity : AppCompatActivity() {
 
     private fun displaySelectedDates() {
         formattedDates = selectedDates.map { date ->
-            // Convert CalendarDay to Date
             val calendar = Calendar.getInstance().apply {
                 set(date.year, date.month - 1, date.day)
             }
@@ -70,10 +69,6 @@ class MultiDateSelectionActivity : AppCompatActivity() {
         }
 
         println("SelectedDatesList: ${gson.toJson(formattedDates)}")
-        selectedDatesTV.text = gson.toJson(formattedDates)
-        // For example, print them to the log
-        formattedDates.forEach { formattedDate ->
-            println("Selected Date: $formattedDate")
-        }
+//        selectedDatesTV.text = gson.toJson(formattedDates)
     }
 }
