@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Stopping the service", Toast.LENGTH_LONG).show()
         }
 
-        getLastKnownLocation()
+/*        getLastKnownLocation()
         getCurrentLocation()
 
         btnGetLastLocation.setOnClickListener {
@@ -114,12 +114,12 @@ class MainActivity : AppCompatActivity() {
             }else {
                 enableInternetConnectionDialog()
             }
-        }
+        }*/
 
     }
 
 
-    @SuppressLint("MissingPermission")
+/*    @SuppressLint("MissingPermission")
     private fun getLastKnownLocation() {
         locationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
             "Unknown Location"
         }
-    }
+    }*/
 
 
 
