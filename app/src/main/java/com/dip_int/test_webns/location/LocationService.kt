@@ -12,6 +12,7 @@ import android.content.Context
 import android.location.Geocoder
 import androidx.core.app.NotificationCompat
 import com.dip_int.test_webns.R
+import com.dip_int.test_webns.api.callSendUserLocation
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -25,12 +26,18 @@ class LocationService : Service() {
         const val ACTION_STOP = "ACTION_STOP"
     }
 
+
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private lateinit var locationClient: LocationClient
+
 
     override fun onBind(intent: Intent?): IBinder? {
         return  null
     }
+
+
+
+
 
     override fun onCreate() {
         super.onCreate()
@@ -58,8 +65,8 @@ class LocationService : Service() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         locationClient
-            .getLocationUpdate(10000L)
-//            .getLocationUpdate(300000L)  // 5 minutes = 300,000 milliseconds
+//            .getLocationUpdate(10000L)
+            .getLocationUpdate(300000L)  // 5 minutes = 300,000 milliseconds
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
                 val lat = location.latitude
@@ -67,9 +74,9 @@ class LocationService : Service() {
                 val locationName = getLocationName(lat, long)
                 val updatedNotification = notification.setContentText("Location: (${"Lat : $lat"}, ${"Long : $long, Address: $locationName"})")
                 notificationManager.notify(1, updatedNotification.build())
-            }
-            .launchIn(serviceScope)
 
+                callSendUserLocation(locationName, lat, long, applicationContext)
+            }.launchIn(serviceScope)
         startForeground(1, notification.build())
     }
 
