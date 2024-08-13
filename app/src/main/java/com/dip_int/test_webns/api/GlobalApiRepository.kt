@@ -23,6 +23,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
+/*** Created By Dipe K Das on: 13th Aug 2024*/
+
 val gson : Gson = Gson()
 
 fun callSendUserLocation(locationName: String, lat: Double, long: Double, applicationContext: Context) {

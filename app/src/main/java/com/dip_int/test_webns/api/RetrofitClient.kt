@@ -7,6 +7,8 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/*** Created By Dipe K Das on: 13th Aug 2024*/
+
 object RetrofitClient {
 
     private var retrofit: Retrofit? = null

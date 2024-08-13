@@ -26,6 +26,8 @@ import com.dip_int.test_webns.common.SharedPreferencesHelper
 import com.dip_int.test_webns.common.backgroundLocationRunning
 import com.dip_int.test_webns.location.LocationService
 
+/*** Created By Dipe K Das on: 13th Aug 2024*/
+
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
@@ -33,15 +35,11 @@ class SplashActivity : AppCompatActivity() {
         const val REQUEST_BACKGROUND_LOCATION_PERMISSION_CODE = 1002
         const val REQUEST_PERMISSION_CODE = 1003
     }
-    var backgroundLocationPermissionGranted = false
+    private var backgroundLocationPermissionGranted = false
 
     override fun onResume() {
         super.onResume()
         println("onResume >> SplashActivity")
-
-//        if (SharedPreferencesHelper.getBoolean(this, BackgroundLocationGranted, )) {
-//            gotoMainActivity()
-//        }
     }
 
 

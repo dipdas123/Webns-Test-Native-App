@@ -63,11 +63,11 @@
         </activity>
 
         <activity
-            android:name=".screens.multi_selection.MultiDateSelectionActivity"
+            android:name=".screens.multi_selection.activity.MultiDateSelectionActivity"
             android:noHistory="false"
             android:resizeableActivity="false"
             android:screenOrientation="portrait" />
-        <activity android:name="com.dip_int.test_webns.screens.multi_selection.MultiDateSelectedListActivity" />
+        <activity android:name="com.dip_int.test_webns.screens.multi_selection.activity.MultiDateSelectedListActivity" />
         <activity android:name="com.dip_int.test_webns.screens.in_app_camera.InAppCameraActivity" />
         <activity android:name="com.dip_int.test_webns.MainActivity" />
 

@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.dip_int.test_webns.R
 
+/*** Created By Dipe K Das on: 13th Aug 2024*/
+
 class DateAdapter(context: Context, dates: List<String>) : ArrayAdapter<String>(context, 0, dates) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

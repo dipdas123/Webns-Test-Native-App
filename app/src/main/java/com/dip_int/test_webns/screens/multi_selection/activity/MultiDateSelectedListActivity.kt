@@ -1,4 +1,4 @@
-package com.dip_int.test_webns.screens.multi_selection
+package com.dip_int.test_webns.screens.multi_selection.activity
 
 import android.os.Bundle
 import android.widget.ImageView
@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.dip_int.test_webns.R
 import com.dip_int.test_webns.screens.multi_selection.adapter.DateAdapter
+
+/*** Created By Dipe K Das on: 13th Aug 2024*/
 
 class MultiDateSelectedListActivity : AppCompatActivity() {
 

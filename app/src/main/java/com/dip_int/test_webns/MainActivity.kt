@@ -22,8 +22,9 @@ import com.dip_int.test_webns.common.ToastHelper
 import com.dip_int.test_webns.common.backgroundLocationRunning
 import com.dip_int.test_webns.location.LocationService
 import com.dip_int.test_webns.screens.in_app_camera.InAppCameraActivity
-import com.dip_int.test_webns.screens.multi_selection.MultiDateSelectionActivity
+import com.dip_int.test_webns.screens.multi_selection.activity.MultiDateSelectionActivity
 
+/*** Created By Dipe K Das on: 13th Aug 2024*/
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,23 +32,6 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_BACKGROUND_LOCATION_PERMISSION_CODE = 1002
         const val REQUEST_PERMISSION_CODE = 1003
     }
-
-    override fun onResume() {
-        super.onResume()
-        println("onResume >> MainActivity")
-
-//        if (!firstTimeOpeningApp) {
-//            firstTimeOpeningApp = false
-//            if (isLocationEnabled()) {
-//                checkAndRequestPermissions()
-//                println("Location services are enabled")
-//            } else {
-//                checkAndPromptEnableLocation()
-//                println("Location services are still disabled")
-//            }
-//        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -386,5 +370,22 @@ class MainActivity : AppCompatActivity() {
             }.show()
     }
     // Permission Dialogs
+
+
+    override fun onResume() {
+        super.onResume()
+        println("onResume >> MainActivity")
+
+//        if (!firstTimeOpeningApp) {
+//            firstTimeOpeningApp = false
+//            if (isLocationEnabled()) {
+//                checkAndRequestPermissions()
+//                println("Location services are enabled")
+//            } else {
+//                checkAndPromptEnableLocation()
+//                println("Location services are still disabled")
+//            }
+//        }
+    }
 
 }
