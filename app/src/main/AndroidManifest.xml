@@ -51,7 +51,7 @@
         <service android:name=".location.LocationService" android:foregroundServiceType="location" tools:ignore="ForegroundServicePermission" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".screens.splash.SplashActivity"
             android:exported="true"
             android:noHistory="false"
             android:resizeableActivity="false"
@@ -68,6 +68,8 @@
             android:resizeableActivity="false"
             android:screenOrientation="portrait" />
         <activity android:name="com.dip_int.test_webns.screens.multi_selection.MultiDateSelectedListActivity" />
+        <activity android:name="com.dip_int.test_webns.screens.in_app_camera.InAppCameraActivity" />
+        <activity android:name="com.dip_int.test_webns.MainActivity" />
 
     </application>
 

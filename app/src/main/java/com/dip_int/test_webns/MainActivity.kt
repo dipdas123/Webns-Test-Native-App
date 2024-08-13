@@ -18,8 +18,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.dip_int.test_webns.common.ToastHelper
 import com.dip_int.test_webns.common.backgroundLocationRunning
 import com.dip_int.test_webns.location.LocationService
+import com.dip_int.test_webns.screens.in_app_camera.InAppCameraActivity
 import com.dip_int.test_webns.screens.multi_selection.MultiDateSelectionActivity
 
 
@@ -32,15 +34,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        println("onResume")
+        println("onResume >> MainActivity")
 
-        if (isLocationEnabled()) {
-            checkAndRequestPermissions()
-            println("Location services are enabled")
-        } else {
-            checkAndPromptEnableLocation()
-            println("Location services are still disabled")
-        }
+//        if (!firstTimeOpeningApp) {
+//            firstTimeOpeningApp = false
+//            if (isLocationEnabled()) {
+//                checkAndRequestPermissions()
+//                println("Location services are enabled")
+//            } else {
+//                checkAndPromptEnableLocation()
+//                println("Location services are still disabled")
+//            }
+//        }
     }
 
 
@@ -93,32 +98,40 @@ class MainActivity : AppCompatActivity() {
 
     private fun clicks(start: Button, stop: Button, locationServiceText: TextView, openCameraBtn: Button, openCalenderBtn: Button) {
         start.setOnClickListener {
-            if (isNetworkAvailable(this)) {
-                if (isLocationEnabled()) {
-                    startOrStopBackgroundLocationServiceStatus(true, locationServiceText)
-                    Toast.makeText(this, "Background Location Service Running...", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(applicationContext, LocationService::class.java)
-                    intent.action = LocationService.ACTION_START
-                    startService(intent)
+            if (!backgroundLocationRunning) {
+                if (isNetworkAvailable(this)) {
+                    if (isLocationEnabled()) {
+                        startOrStopBackgroundLocationServiceStatus(true, locationServiceText)
+                        Toast.makeText(this, "Background Location Service Running...", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(applicationContext, LocationService::class.java)
+                        intent.action = LocationService.ACTION_START
+                        startService(intent)
+                    } else {
+                        checkAndPromptEnableLocation()
+                    }
                 } else {
-                    checkAndPromptEnableLocation()
+                    enableInternetConnectionDialog()
                 }
             } else {
-                enableInternetConnectionDialog()
+                ToastHelper.showSuccessToast(this@MainActivity, "Service is already running..")
             }
         }
 
         stop.setOnClickListener {
-            startOrStopBackgroundLocationServiceStatus(false, locationServiceText)
-            val intent = Intent(applicationContext, LocationService::class.java)
-            intent.action = LocationService.ACTION_STOP
-            startService(intent)
-            Toast.makeText(this, "Background LocationService Stopped", Toast.LENGTH_SHORT).show()
+            if (backgroundLocationRunning) {
+                startOrStopBackgroundLocationServiceStatus(false, locationServiceText)
+                val intent = Intent(applicationContext, LocationService::class.java)
+                intent.action = LocationService.ACTION_STOP
+                startService(intent)
+                ToastHelper.showErrorToast(this@MainActivity, "Background LocationService Stopped")
+            } else {
+                ToastHelper.showErrorToast(this@MainActivity, "Service is already stopped")
+            }
         }
 
         openCameraBtn.setOnClickListener {
-//            val intent = Intent(this@MainActivity, MultiDateSelectionActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(this@MainActivity, InAppCameraActivity::class.java)
+            startActivity(intent)
         }
 
         openCalenderBtn.setOnClickListener {
@@ -127,8 +140,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startOrStopBackgroundLocationServiceStatus(backgroundLocationRunning: Boolean, locationServiceText: TextView) {
-        if (backgroundLocationRunning) {
+    private fun startOrStopBackgroundLocationServiceStatus(backgroundLocationRunningValue: Boolean, locationServiceText: TextView) {
+        backgroundLocationRunning = backgroundLocationRunningValue
+        if (backgroundLocationRunningValue) {
             locationServiceText.text = "Running...\nCheck the notification panel for updates."
         } else {
             locationServiceText.text = "Start Service"

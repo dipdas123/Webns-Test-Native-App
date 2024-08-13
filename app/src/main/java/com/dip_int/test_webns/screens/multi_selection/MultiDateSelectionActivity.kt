@@ -3,7 +3,7 @@ package com.dip_int.test_webns.screens.multi_selection
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.TextView
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.dip_int.test_webns.R
@@ -21,8 +21,8 @@ class MultiDateSelectionActivity : AppCompatActivity() {
 
     private val selectedDates = mutableListOf<CalendarDay>()
     var formattedDates: List<String> = emptyList()
-    lateinit var selectedDatesTV: TextView
     lateinit var viewDatesListBtn: Button
+    lateinit var back: ImageView
 
     override fun onResume() {
         super.onResume()
@@ -36,14 +36,18 @@ class MultiDateSelectionActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_multi_date_selection)
         val calendarView: MaterialCalendarView = findViewById(R.id.calendarView)
-//        selectedDatesTV = findViewById(R.id.selectedDatesTV)
         viewDatesListBtn = findViewById(R.id.viewDatesListBtn)
+        back = findViewById(R.id.back)
 
 
         clicks(calendarView)
     }
 
     private fun clicks(calendarView: MaterialCalendarView) {
+        back.setOnClickListener{
+            finish()
+        }
+
         calendarView.setOnDateChangedListener { widget, date, selected ->
             if (selected) {
                 selectedDates.add(date)

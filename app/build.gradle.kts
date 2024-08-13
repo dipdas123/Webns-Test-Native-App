@@ -55,4 +55,8 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.github.prolificinteractive:material-calendarview:2.0.0")
+    implementation ("androidx.camera:camera-camera2:1.2.0")
+    implementation ("androidx.camera:camera-view:1.2.3")
+    implementation ("androidx.camera:camera-lifecycle:1.2.3")
+    implementation ("com.github.ihsanbal:LoggingInterceptor:3.1.0")
 }

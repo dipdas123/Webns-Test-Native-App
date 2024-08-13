@@ -1,20 +1,39 @@
 package com.dip_int.test_webns.api
 
+import android.util.Log.VERBOSE
+import com.ihsanbal.logging.Level
+import com.ihsanbal.logging.LoggingInterceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    // Lazy initialization of Retrofit instance
-    val instance: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    private var retrofit: Retrofit? = null
+    private var currentBaseUrl: String? = null
+
+    private fun getClient(baseUrl: String): Retrofit {
+        if (retrofit == null || currentBaseUrl != baseUrl) {
+
+            val client = OkHttpClient.Builder().addInterceptor(
+                LoggingInterceptor.Builder()
+                .setLevel(Level.BASIC)
+                .log(VERBOSE)
+                .build())
+                .build()
+
+            retrofit = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            currentBaseUrl = baseUrl
+        }
+        return retrofit!!
     }
 
-    // Generic function to create services
-    fun <T> createService(serviceClass: Class<T>): T {
-        return instance.create(serviceClass)
+    fun <T> createService(baseUrl: String, serviceClass: Class<T>): T {
+        return getClient(baseUrl).create(serviceClass)
     }
 }

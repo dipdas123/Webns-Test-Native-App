@@ -49,7 +49,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:textStyle="normal"
-                android:text="Background Location Service"
+                android:text="Background Location Service\n\nAlways keep the location service online to get continuous location update"
                 android:layout_marginTop="@dimen/_5sdp"
                 />
 

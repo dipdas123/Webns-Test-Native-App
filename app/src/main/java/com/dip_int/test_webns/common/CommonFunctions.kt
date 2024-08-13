@@ -5,17 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
 import android.telephony.TelephonyManager
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.UUID
 
 fun getDeviceIMEI(): String {
-    return UUID.randomUUID().toString()
+    return "fbf55246a7ac7d41"
 }
 
 fun getDeviceType(): String {
@@ -114,3 +118,25 @@ fun getBatteryLevel(context: Context): Int {
 }
 
 val dateFormatter = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault())
+
+fun rotateBitmapIfNeeded(context: Context, bitmap: Bitmap, imageUri: Uri): Bitmap {
+    val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
+    val exif = inputStream?.let { ExifInterface(it) }
+    val rotation = exif?.getAttributeInt(
+        ExifInterface.TAG_ORIENTATION,
+        ExifInterface.ORIENTATION_NORMAL
+    )?.let { orientation ->
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+            else -> 0f
+        }
+    } ?: 0f
+
+    val matrix = Matrix().apply {
+        postRotate(rotation)
+    }
+
+    return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+}

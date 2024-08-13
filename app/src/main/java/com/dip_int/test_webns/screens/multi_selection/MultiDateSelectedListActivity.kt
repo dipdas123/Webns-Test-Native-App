@@ -1,12 +1,12 @@
 package com.dip_int.test_webns.screens.multi_selection
 
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.ListView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.dip_int.test_webns.R
 import com.dip_int.test_webns.screens.multi_selection.adapter.DateAdapter
-import com.prolificinteractive.materialcalendarview.CalendarDay
 
 class MultiDateSelectedListActivity : AppCompatActivity() {
 
@@ -14,8 +14,8 @@ class MultiDateSelectedListActivity : AppCompatActivity() {
 
     }
 
-    private val selectedDates = mutableListOf<CalendarDay>()
     lateinit var listViewDates: ListView
+    lateinit var back: ImageView
 
     override fun onResume() {
         super.onResume()
@@ -29,6 +29,7 @@ class MultiDateSelectedListActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_multi_date_selected_list)
         listViewDates = findViewById(R.id.listViewDates)
+        back = findViewById(R.id.back)
 
         val formattedDates = intent.getStringArrayListExtra("formattedDates")
         val listView: ListView = findViewById(R.id.listViewDates)
@@ -39,7 +40,9 @@ class MultiDateSelectedListActivity : AppCompatActivity() {
     }
 
     private fun clicks() {
-
+        back.setOnClickListener{
+            finish()
+        }
     }
 
 

@@ -8,4 +8,6 @@
 
     <color name="primaryColor">#A020F0</color>
     <color name="primaryColorLite">#A020F0</color>
+    <color name="transparent">#00F44336</color>
+    <color name="white">#FFFFFF</color>
 </resources>

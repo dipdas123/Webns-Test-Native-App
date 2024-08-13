@@ -1,19 +1,20 @@
 package com.dip_int.test_webns.location
 
-import android.app.Service
-import android.content.Intent
-import android.os.IBinder
-import com.google.android.gms.location.LocationServices
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.location.Geocoder
+import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.dip_int.test_webns.R
 import com.dip_int.test_webns.api.callSendUserLocation
 import com.dip_int.test_webns.common.backgroundLocationRunning
+import com.dip_int.test_webns.common.notificationInterval
+import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -66,8 +67,7 @@ class LocationService : Service() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         locationClient
-//            .getLocationUpdate(10000L)
-            .getLocationUpdate(300000L)  // 5 minutes = 300,000 milliseconds
+            .getLocationUpdate(notificationInterval)
             .catch { e -> e.printStackTrace() }
             .onEach { location ->
                 val lat = location.latitude
